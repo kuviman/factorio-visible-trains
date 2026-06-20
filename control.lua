@@ -9,8 +9,28 @@ script.on_event(defines.events.on_tick,
     for _, train in ipairs(train_manager.get_trains({})) do
         for i = #train.carriages, 1, -1 do
             local carriage = train.carriages[i]
+            local sprite = "entity/" .. carriage.prototype.name
+
+            if settings.global["visible-trains-wagon-content-icon"].value then
+                if carriage.type == "cargo-wagon" then
+                    local inventory = carriage.get_inventory(defines.inventory.cargo_wagon)
+                    local contents = inventory.get_contents()
+                    if #contents > 0 then
+                        sprite = "item/" .. contents[1].name
+                    end
+                elseif carriage.type == "fluid-wagon" then
+                    local fluid_contents = carriage.get_fluid_contents()
+                    for fluid_name, amount in pairs(fluid_contents) do
+                        if amount > 0 then
+                            sprite = "fluid/" .. fluid_name
+                            break
+                        end
+                    end
+                end
+            end
+
             rendering.draw_sprite({
-                sprite = "entity/" .. carriage.prototype.name,
+                sprite = sprite,
                 x_scale = 1 / player.zoom,
                 y_scale = 1 / player.zoom,
                 time_to_live = 1,
