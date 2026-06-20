@@ -12,6 +12,7 @@ script.on_event(defines.events.on_tick,
         for i = 1, #train.carriages do
             local carriage = train.carriages[i]
             local sprite = "entity/" .. carriage.prototype.name
+            local layer = "arrow"
 
             if settings.global["visible-trains-wagon-content-icon"].value then
                 if carriage.type == "cargo-wagon" then
@@ -28,6 +29,8 @@ script.on_event(defines.events.on_tick,
                             break
                         end
                     end
+                else
+                    layer = "collision-selection-box"
                 end
             end
 
@@ -39,6 +42,7 @@ script.on_event(defines.events.on_tick,
                 target = carriage,
                 surface = 1, -- TODO
                 render_mode = "chart",
+                render_layer = layer,
             })
         end
     end
