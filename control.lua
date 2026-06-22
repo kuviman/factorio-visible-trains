@@ -19,14 +19,14 @@ function redraw_rail_graph()
     end
     local zoom_scale = current_zoom_scale()
     for _, rail in ipairs(surface.find_entities_filtered(
-        {name = {
+        { name = {
             "curved-rail-a",
             "curved-rail-b",
             "half-diagonal-rail",
             "straight-rail",
             "legacy-straight-rail",
             "legacy-curved-rail",
-        }}
+        } }
     )) do
         for _, rail_direction in pairs(defines.rail_direction) do
             for rail_connection_direction_name, rail_connection_direction in pairs(defines.rail_connection_direction) do
@@ -57,7 +57,7 @@ end
 function draw_all_trains()
     local train_manager = game.train_manager
     local zoom_scale = current_zoom_scale()
-    
+
     for _, train in ipairs(train_manager.get_trains({})) do
         for i = 1, #train.carriages do
             local carriage = train.carriages[i]
@@ -113,16 +113,16 @@ local ticks_since_changed_zoom = 0
 -- and then update scale when zoom level changes
 -- would help performance maybe
 script.on_event(defines.events.on_tick,
-  function(event)
-    local zoom_scale = current_zoom_scale()
-    if zoom_scale ~= prev_zoom_scale then
-        ticks_since_changed_zoom = ticks_since_changed_zoom + 1
-        if ticks_since_changed_zoom > 100 then
-            ticks_since_changed_zoom = 0
-            prev_zoom_scale = zoom_scale
-            redraw_rail_graph()
+    function(event)
+        local zoom_scale = current_zoom_scale()
+        if zoom_scale ~= prev_zoom_scale then
+            ticks_since_changed_zoom = ticks_since_changed_zoom + 1
+            if ticks_since_changed_zoom > 100 then
+                ticks_since_changed_zoom = 0
+                prev_zoom_scale = zoom_scale
+                redraw_rail_graph()
+            end
         end
+        draw_all_trains()
     end
-    draw_all_trains()
-  end
 )
