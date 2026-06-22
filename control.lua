@@ -40,7 +40,7 @@ script.on_event(defines.events.on_tick,
                 y_scale = zoom_scale,
                 time_to_live = 1,
                 target = carriage,
-                surface = 1, -- TODO
+                surface = carriage.surface,
                 render_mode = "chart",
                 render_layer = layer,
             })
