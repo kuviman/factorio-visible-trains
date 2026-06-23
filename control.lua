@@ -26,6 +26,25 @@ function current_zoom_scale()
     return settings.global["visible-trains-icon-scale"].value / current_player().zoom
 end
 
+function get_first_group_icon_sprite(group_name)
+    if not group_name or group_name == "" then
+        return nil
+    end
+
+    local icon_type, icon_name = group_name:match("%[([%w%-]+)=([%w%-%.]+)%]")
+    if not icon_type or not icon_name then
+        return nil
+    end
+
+    if icon_type == "virtual-signal" or icon_type == "signal" then
+        return "virtual-signal/" .. icon_name
+    elseif icon_type == "planet" then
+        return "space-location/" .. icon_name
+    end
+
+    return icon_type .. "/" .. icon_name
+end
+
 function redraw_rail_graph()
     local surface = current_player().surface
     for _, drawn in ipairs(drawn) do
@@ -127,8 +146,15 @@ end
 function draw_all_trains()
     local train_manager = game.train_manager
     local zoom_scale = current_zoom_scale()
+    local show_group_icon_on_locomotive = settings.global["visible-trains-locomotive-group-icon"].value
+    local locomotive_group_icon_scale = settings.global["visible-trains-locomotive-group-icon-scale"].value
 
     for _, train in ipairs(train_manager.get_trains({})) do
+        local group_icon_sprite = nil
+        if show_group_icon_on_locomotive then
+            group_icon_sprite = get_first_group_icon_sprite(train.group)
+        end
+
         for i = 1, #train.carriages do
             local carriage = train.carriages[i]
             local sprite = "entity/" .. carriage.prototype.name
@@ -164,6 +190,19 @@ function draw_all_trains()
                 render_mode = "chart",
                 render_layer = layer,
             })
+
+            if carriage.type == "locomotive" and group_icon_sprite then
+                rendering.draw_sprite({
+                    sprite = group_icon_sprite,
+                    x_scale = zoom_scale * locomotive_group_icon_scale,
+                    y_scale = zoom_scale * locomotive_group_icon_scale,
+                    time_to_live = 1,
+                    target = carriage,
+                    surface = carriage.surface,
+                    render_mode = "chart",
+                    render_layer = "arrow",
+                })
+            end
         end
     end
 end

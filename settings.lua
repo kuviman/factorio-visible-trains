@@ -17,9 +17,25 @@ data:extend({
     },
     {
         type = "bool-setting",
+        name = "visible-trains-locomotive-group-icon",
+        setting_type = "runtime-global",
+        default_value = true,
+        order = "c",
+    },
+    {
+        type = "double-setting",
+        name = "visible-trains-locomotive-group-icon-scale",
+        setting_type = "runtime-global",
+        default_value = 0.75,
+        minimum_value = 0.1,
+        maximum_value = 3,
+        order = "d",
+    },
+    {
+        type = "bool-setting",
         name = "visible-trains-draw-rails",
         setting_type = "runtime-global",
         default_value = false,
-        order = "c",
+        order = "e",
     },
 })
